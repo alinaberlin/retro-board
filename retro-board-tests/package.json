@@ -1,0 +1,15 @@
+{
+  "name": "retro-board-tests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test-e2e:chrome": "testcafe chrome ./e2e -s takeOnFails=true --disable-page-caching -q",
+    "test-e2e:chrome:headless": "testcafe chrome:headless ./e2e -s takeOnFails=true"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "testcafe": "^1.9.4"
+  }
+}
