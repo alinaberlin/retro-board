@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo, useRef } from 'react';
 import styled from 'styled-components';
-import { LoremIpsum } from 'lorem-ipsum';
+import { getLorem } from './lorem';
 import {
   Typography,
   makeStyles,
@@ -133,15 +133,17 @@ const PostItem = ({
               </DragHandle>
             ) : null}
             <CardContent>
-              <Typography variant="body1">
-                <EditableLabel
-                  readOnly={!canEdit || isBlurred}
-                  value={actualContent}
-                  onChange={onEdit}
-                  label="Post content"
-                  multiline
-                />
-              </Typography>
+              <LabelContainer>
+                <Typography variant="body1">
+                  <EditableLabel
+                    readOnly={!canEdit || isBlurred}
+                    value={actualContent}
+                    onChange={onEdit}
+                    label="Post content"
+                    multiline
+                  />
+                </Typography>
+              </LabelContainer>
               {canShowAuthor && (
                 <AuthorContainer>
                   <Typography
@@ -359,25 +361,37 @@ const BlurOverlay = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(3px);
+  background-color: rgba(255, 255, 255, 0.9);
+  @supports (backdrop-filter: blur(3px)) {
+    background-color: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(3px);
+  }
   z-index: 100;
 `;
 
-const lorem = new LoremIpsum({
-  sentencesPerParagraph: {
-    max: 8,
-    min: 4,
-  },
-  wordsPerSentence: {
-    max: 16,
-    min: 4,
-  },
-});
+const LabelContainer = styled.div`
+  > * {
+    display: none;
+  }
+
+  &::before {
+    content: '(hidden for now)';
+  }
+
+  @supports (backdrop-filter: blur(3px)) {
+    > * {
+      display: block;
+    }
+
+    &::before {
+      content: unset;
+    }
+  }
+`;
 
 function generateLoremIpsum(originalText: string) {
-  const words = originalText.split(' ').length;
-  return lorem.generateWords(words);
+  const count = originalText.split(' ').length;
+  return getLorem(count);
 }
 
 export default PostItem;
